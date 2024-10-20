@@ -1,0 +1,47 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <label for="longUrl">LongUrl</label>
+    <input type="text" id="longUrl" name="longUrl" placeholder="Enter long link here" required>
+    <button onclick="shortenUrl()">Shorten</button>
+    <br><br/>
+    <label for="shortUrl">ShortUrl</label>
+    <input type="text" id="shortUrl" name="shortUrl" placeholder="Short Url Here">
+    <br><br/>
+    <label id="qr"></label>
+    <br>
+    <img id="qrCode" alt="">
+
+
+    <script>
+       const shortUrl=document.getElementById("shortUrl")
+       const qrCode=document.getElementById("qrCode")
+       const qr=document.getElementById("qr")
+        async function shortenUrl() {
+            var longUrl = document.getElementById("longUrl").value;
+            console.log(longUrl.length)
+            if(longUrl=="" || longUrl.substring(0,8)!="https://" || longUrl.length<=8){
+                alert("Please enter a valid URL")
+                return;
+            }
+            const res = await fetch('/short', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ longUrl })
+            });
+            const data = await res.json();
+            console.log(data)
+            qr.innerHTML="QR Code"
+            qrCode.src= data.QRcode
+            shortUrl.value = data.shortUrl;
+        }
+    </script>
+</body>
+</html>
